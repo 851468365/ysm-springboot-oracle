@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ai.ysm.sys.dao.SysRoleMenuDao">
+
+	<insert id="save">
+		insert into sys_role_menu
+		(
+			id,
+			role_id,
+			menu_id
+		)
+		SELECT sys_role_menu$SEQ.Nextval id, A.*
+		FROM(
+		<foreach collection="menuIdList" item="item" separator="union all" >
+			select
+				#{roleId},
+				#{item}
+				from dual
+		</foreach>
+		)A
+	</insert>
+	
+	<delete id="delete">
+		delete from sys_role_menu where role_id = #{value}
+	</delete>
+
+	<delete id="deleteBatch">
+		delete from sys_role_menu where role_id in
+		<foreach item="roleId" collection="array" open="(" separator="," close=")">
+			#{roleId}
+		</foreach>
+	</delete>
+
+
+	<delete id="deleteBatchByMenuId">
+		delete from sys_role_menu where menu_id in
+		<foreach item="menuId" collection="array" open="(" separator="," close=")">
+			#{menuId}
+		</foreach>
+	</delete>
+	
+	<select id="queryMenuIdList" resultType="long">
+		select menu_id from sys_role_menu where role_id = #{value}
+	</select>
+
+</mapper>
